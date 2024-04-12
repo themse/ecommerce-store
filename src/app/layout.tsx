@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en" className={cn(inter.variable)} suppressHydrationWarning>
-			<body className="font-inter">{children}</body>
+			<body className="min-h-screen bg-background font-inter antialiased">{children}</body>
 		</html>
 	);
 }
