@@ -4,8 +4,8 @@ import { Analytics } from '@/ui/components/organisms/Analytics/Analytics';
 
 export default async function Dashboard() {
 	return (
-		<div>
+		<section>
 			<Analytics />
-		</div>
+		</section>
 	);
 }
