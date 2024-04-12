@@ -4,9 +4,11 @@ import { PropsWithChildren } from 'react';
 import { Nav } from '@/ui/components/molecules/Nav/Nav';
 import { NavLink } from '@/ui/components/molecules/Nav/NavLink';
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminLayout({ children }: PropsWithChildren) {
 	return (
-		<div>
+		<>
 			<Nav>
 				<NavLink href="/admin">Dashboard</NavLink>
 				<NavLink href="/admin/products">Products</NavLink>
@@ -14,6 +16,6 @@ export default function AdminLayout({ children }: PropsWithChildren) {
 				<NavLink href="/admin/sales">Sales</NavLink>
 			</Nav>
 			<div className="container my-6">{children}</div>
-		</div>
+		</>
 	);
 }
