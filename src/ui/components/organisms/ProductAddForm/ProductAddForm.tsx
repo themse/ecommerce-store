@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useFormState } from 'react-dom';
-import { useRef, ElementRef, useEffect } from 'react';
+import { useRef, ElementRef, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import {
@@ -32,6 +32,7 @@ export const ProductAddForm = () => {
 	const [formState, formAction] = useFormState<FormState, FormData>(addProductAction, {
 		message: '',
 	});
+	const [pending, startTransaction] = useTransition();
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(schema),
@@ -60,12 +61,11 @@ export const ProductAddForm = () => {
 		<Form {...form}>
 			<form
 				ref={formRef}
-				action={formAction}
 				onSubmit={(evt) => {
-					// TODO Workaround: refactor when found better solution
 					evt.preventDefault();
+
 					form.handleSubmit(() => {
-						formAction(new FormData(formRef.current!));
+						startTransaction(() => formAction(new FormData(formRef.current!)));
 					})(evt);
 				}}
 				className="space-y-8"
@@ -136,7 +136,9 @@ export const ProductAddForm = () => {
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">Save</Button>
+				<Button disabled={pending} type="submit">
+					{pending ? 'Saving....' : 'Save'}
+				</Button>
 
 				{formState.errors && (
 					<HelperText className="my-4 text-center" variant="error">
