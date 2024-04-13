@@ -32,6 +32,7 @@ export async function addProductAction(
 				description,
 				filePath,
 				imagePath,
+				isAvailableForPurchase: false,
 			},
 		});
 

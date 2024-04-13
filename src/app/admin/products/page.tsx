@@ -2,10 +2,28 @@ import 'server-only';
 import Link from 'next/link';
 
 import { Button } from '@/ui/components/atoms/Button';
+import prisma from '@/services/libs/prisma';
 import { ProductsTable } from '@/ui/components/organisms/ProductsTable';
 import { Header } from '../_components/Header';
 
-export default function Products() {
+export default async function Products() {
+	const products = await prisma.product.findMany({
+		select: {
+			id: true,
+			name: true,
+			priceInCents: true,
+			isAvailableForPurchase: true,
+			_count: {
+				select: {
+					order: true,
+				},
+			},
+		},
+		orderBy: {
+			name: 'asc',
+		},
+	});
+
 	return (
 		<section className="flex flex-col gap-y-2">
 			<div className="flex items-center justify-between gap-x-4">
@@ -14,7 +32,7 @@ export default function Products() {
 					<Link href="/admin/products/new"> Add product</Link>
 				</Button>
 			</div>
-			<ProductsTable />
+			{products.length > 0 ? <ProductsTable products={products} /> : <p>No products found</p>}
 		</section>
 	);
 }

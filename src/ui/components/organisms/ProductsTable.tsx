@@ -1,65 +1,28 @@
+import { Product } from '@prisma/client';
 import {
 	Table,
 	TableBody,
-	TableCaption,
 	TableCell,
-	TableFooter,
 	TableHead,
 	TableHeader,
 	TableRow,
 } from '@/ui/components/molecules/Table';
+import { formatCurrency, formatNumber } from '@/utils/formatters';
 
-const invoices = [
-	{
-		invoice: 'INV001',
-		paymentStatus: 'Paid',
-		totalAmount: '$250.00',
-		paymentMethod: 'Credit Card',
-	},
-	{
-		invoice: 'INV002',
-		paymentStatus: 'Pending',
-		totalAmount: '$150.00',
-		paymentMethod: 'PayPal',
-	},
-	{
-		invoice: 'INV003',
-		paymentStatus: 'Unpaid',
-		totalAmount: '$350.00',
-		paymentMethod: 'Bank Transfer',
-	},
-	{
-		invoice: 'INV004',
-		paymentStatus: 'Paid',
-		totalAmount: '$450.00',
-		paymentMethod: 'Credit Card',
-	},
-	{
-		invoice: 'INV005',
-		paymentStatus: 'Paid',
-		totalAmount: '$550.00',
-		paymentMethod: 'PayPal',
-	},
-	{
-		invoice: 'INV006',
-		paymentStatus: 'Pending',
-		totalAmount: '$200.00',
-		paymentMethod: 'Bank Transfer',
-	},
-	{
-		invoice: 'INV007',
-		paymentStatus: 'Unpaid',
-		totalAmount: '$300.00',
-		paymentMethod: 'Credit Card',
-	},
-];
+// TODO use Adapter
+type ProductItem = Pick<Product, 'id' | 'name' | 'priceInCents' | 'isAvailableForPurchase'> & {
+	_count: {
+		order: number;
+	};
+};
 
-type Props = {};
+type Props = {
+	products: ProductItem[];
+};
 
-export const ProductsTable = ({}: Props) => {
+export const ProductsTable = ({ products }: Props) => {
 	return (
 		<Table>
-			<TableCaption>A list of your recent products.</TableCaption>
 			<TableHeader>
 				<TableRow>
 					<TableHead className="w-0">
@@ -74,21 +37,16 @@ export const ProductsTable = ({}: Props) => {
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{invoices.map((invoice) => (
-					<TableRow key={invoice.invoice}>
-						<TableCell className="font-medium">{invoice.invoice}</TableCell>
-						<TableCell>{invoice.paymentStatus}</TableCell>
-						<TableCell>{invoice.paymentMethod}</TableCell>
-						<TableCell className="text-right">{invoice.totalAmount}</TableCell>
+				{products.map((product, index) => (
+					<TableRow key={product.id}>
+						<TableCell className="font-medium">{index + 1}</TableCell>
+						<TableCell>{product.name}</TableCell>
+						<TableCell>{formatCurrency(product.priceInCents)}</TableCell>
+						<TableCell>{formatNumber(product._count.order)}</TableCell>
+						<TableCell className="text-right">N/A</TableCell>
 					</TableRow>
 				))}
 			</TableBody>
-			<TableFooter>
-				<TableRow>
-					<TableCell colSpan={3}>Total</TableCell>
-					<TableCell className="text-right">$2,500.00</TableCell>
-				</TableRow>
-			</TableFooter>
 		</Table>
 	);
 };
