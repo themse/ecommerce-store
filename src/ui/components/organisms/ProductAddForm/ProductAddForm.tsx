@@ -2,8 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useFormState } from 'react-dom';
+import { useRef, ElementRef } from 'react';
 
-import { Button } from '@/ui/components/atoms/Button';
 import {
 	Form,
 	FormControl,
@@ -18,8 +19,18 @@ import { formatCurrency } from '@/utils/formatters';
 import { Textarea } from '@/ui/components/atoms/Textarea';
 import { FormValues, schema } from './schema';
 import { addProductAction } from './actions';
+import { SubmitButton } from './SubmitButton';
 
 export const ProductAddForm = () => {
+	const formRef = useRef<ElementRef<'form'>>(null);
+	const [formState, formAction] = useFormState(
+		addProductAction,
+		{
+			message: '',
+		},
+		'/admin/products', // redirect
+	);
+
 	const form = useForm<FormValues>({
 		resolver: zodResolver(schema),
 		defaultValues: {
@@ -37,20 +48,19 @@ export const ProductAddForm = () => {
 	const fileRef = form.register('file');
 	const imageRef = form.register('image');
 
-	async function onSubmit({ name, priceInCents, description, file, image }: FormValues) {
-		const formData = new FormData();
-		formData.append('name', name);
-		formData.append('priceInCents', priceInCents);
-		formData.append('description', description);
-		formData.append('file', file![0]);
-		formData.append('image', image![0]);
-
-		return addProductAction(formData);
-	}
-
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+			<form
+				ref={formRef}
+				action={formAction}
+				onSubmit={(evt) => {
+					evt.preventDefault();
+					form.handleSubmit(() => {
+						formAction(new FormData(formRef.current!));
+					})(evt);
+				}}
+				className="space-y-8"
+			>
 				<FormField
 					control={form.control}
 					name="name"
@@ -117,7 +127,14 @@ export const ProductAddForm = () => {
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">Save</Button>
+				<SubmitButton />
+
+				{formState.errors && (
+					<p className="my-4 text-center text-destructive">
+						<b>Server Error: </b>
+						{formState.message}
+					</p>
+				)}
 			</form>
 		</Form>
 	);
