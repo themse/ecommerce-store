@@ -3,8 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useFormState } from 'react-dom';
-import { useRef, ElementRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRef, ElementRef } from 'react';
 
 import {
 	Form,
@@ -26,8 +25,6 @@ import { addProductAction } from './actions';
 type FormState = Awaited<ReturnType<typeof addProductAction>>;
 
 export const ProductAddForm = () => {
-	const router = useRouter();
-
 	const formRef = useRef<ElementRef<'form'>>(null);
 	const [formState, formAction] = useFormState<FormState, FormData>(addProductAction, {
 		message: '',
@@ -49,12 +46,6 @@ export const ProductAddForm = () => {
 	 */
 	const fileRef = form.register('file');
 	const imageRef = form.register('image');
-
-	useEffect(() => {
-		if (formState.data) {
-			router.push('/admin/products');
-		}
-	}, [formState.data, router]);
 
 	return (
 		<Form {...form}>

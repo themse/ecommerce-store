@@ -1,31 +1,32 @@
 'use server';
 
-import { Prisma, Product } from '@prisma/client';
+import { Product } from '@prisma/client';
+import { redirect } from 'next/navigation';
 
 import prisma from '@/services/libs/prisma';
 import { uploadFile } from '@/utils/uploadFile';
 import { FormValues } from './schema';
 import { ActionResponse } from '@/types/ActionResponse';
-import { getErrorMessage } from '@/utils/getErrorMessage';
-
-type Payload = Omit<FormValues, 'image' | 'file'> & {
-	file: File;
-	image: File;
-};
+import { schema } from './schema';
 
 export async function addProductAction(
 	_prevState: ActionResponse<Product, FormValues>,
 	formData: FormData,
 ): Promise<ActionResponse<Product, FormValues>> {
-	try {
-		const { file, image, name, priceInCents, description } = Object.fromEntries(
-			formData,
-		) as Payload;
+	const data = Object.fromEntries(formData);
+	const parsed = schema.safeParse(data);
 
-		const { filePath } = await uploadFile(file, 'products');
-		const { filePath: imagePath } = await uploadFile(image, 'products');
+	if (parsed.success) {
+		const { name, priceInCents, description } = parsed.data;
 
-		const created = await prisma.product.create({
+		// TODO Issue send FileList/File[] but receive File
+		const { file, image } = data;
+
+		// Upload files
+		const { filePath } = await uploadFile(file as File, 'products');
+		const { filePath: imagePath } = await uploadFile(image as File, 'products');
+
+		await prisma.product.create({
 			data: {
 				name,
 				priceInCents: Number(priceInCents),
@@ -36,23 +37,12 @@ export async function addProductAction(
 			},
 		});
 
-		return {
-			message: 'New product is created',
-			data: created,
-		};
-	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			return {
-				message: 'Database Error',
-				errors: error.message,
-				statusCode: 400,
-			};
-		}
-
-		return {
-			message: getErrorMessage(error),
-			errors: 'Server Error',
-			statusCode: 400,
-		};
+		redirect('/admin/products');
 	}
+
+	return {
+		message: 'Invalid data',
+		errors: 'Server Error',
+		statusCode: 400,
+	};
 }
