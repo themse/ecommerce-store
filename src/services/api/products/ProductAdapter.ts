@@ -1,19 +1,17 @@
-import { Product } from '@prisma/client';
-
 import { formatCurrency, formatNumber } from '@/utils/formatters';
-import { ProductTableItem } from './types';
+import { ProductTableItem, RawProduct } from './types';
 
 export class ProductAdapter {
-	constructor(private readonly value: Product) {}
+	constructor(private readonly value: RawProduct) {}
 
 	private get priceInCents() {
 		return formatCurrency(this.value.priceInCents);
 	}
 
 	private get orderCount() {
-		const _value = this.value as Product & { _count?: { order: number } };
+		const _value = this.value;
 
-		if (_value?._count && typeof _value?._count?.order != null) {
+		if (_value?._count?.order != null) {
 			return formatNumber(_value._count.order);
 		}
 

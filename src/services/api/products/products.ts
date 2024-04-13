@@ -3,9 +3,10 @@ import 'server-only';
 import { Adapter } from '@/services/Adapter';
 import prisma from '@/services/libs/prisma';
 import { ProductAdapter } from './ProductAdapter';
+import { RawProduct } from './types';
 
 export const getProductList = async () => {
-	const rawData = await prisma.product.findMany({
+	const rawData = (await prisma.product.findMany({
 		select: {
 			id: true,
 			name: true,
@@ -20,11 +21,9 @@ export const getProductList = async () => {
 		orderBy: {
 			name: 'asc',
 		},
-	});
+	})) as RawProduct[];
 
 	const data = rawData.map((rawItem) =>
-		// TODO fix type
-		// @ts-ignore
 		Adapter.from(rawItem).to((item) => new ProductAdapter(item).adaptTableItem()),
 	);
 
