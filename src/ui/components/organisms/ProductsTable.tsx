@@ -1,4 +1,3 @@
-import { Product } from '@prisma/client';
 import {
 	Table,
 	TableBody,
@@ -7,17 +6,10 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/ui/components/molecules/Table';
-import { formatCurrency, formatNumber } from '@/utils/formatters';
-
-// TODO use Adapter
-type ProductItem = Pick<Product, 'id' | 'name' | 'priceInCents' | 'isAvailableForPurchase'> & {
-	_count: {
-		order: number;
-	};
-};
+import { ProductTableItem } from '@/services/api/products/types';
 
 type Props = {
-	products: ProductItem[];
+	products: ProductTableItem[];
 };
 
 export const ProductsTable = ({ products }: Props) => {
@@ -41,8 +33,8 @@ export const ProductsTable = ({ products }: Props) => {
 					<TableRow key={product.id}>
 						<TableCell className="font-medium">{index + 1}</TableCell>
 						<TableCell>{product.name}</TableCell>
-						<TableCell>{formatCurrency(product.priceInCents)}</TableCell>
-						<TableCell>{formatNumber(product._count.order)}</TableCell>
+						<TableCell>{product.priceInCents}</TableCell>
+						<TableCell>{product.orderCount}</TableCell>
 						<TableCell className="text-right">N/A</TableCell>
 					</TableRow>
 				))}

@@ -2,27 +2,12 @@ import 'server-only';
 import Link from 'next/link';
 
 import { Button } from '@/ui/components/atoms/Button';
-import prisma from '@/services/libs/prisma';
 import { ProductsTable } from '@/ui/components/organisms/ProductsTable';
+import { getProductList } from '@/services/api/products/products';
 import { Header } from '../_components/Header';
 
 export default async function Products() {
-	const products = await prisma.product.findMany({
-		select: {
-			id: true,
-			name: true,
-			priceInCents: true,
-			isAvailableForPurchase: true,
-			_count: {
-				select: {
-					order: true,
-				},
-			},
-		},
-		orderBy: {
-			name: 'asc',
-		},
-	});
+	const products = await getProductList();
 
 	return (
 		<section className="flex flex-col gap-y-2">
