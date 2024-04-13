@@ -3,7 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useFormState } from 'react-dom';
-import { useRef, ElementRef } from 'react';
+import { useRef, ElementRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 import {
 	Form,
@@ -17,19 +18,20 @@ import {
 import { Input } from '@/ui/components/atoms/Input';
 import { formatCurrency } from '@/utils/formatters';
 import { Textarea } from '@/ui/components/atoms/Textarea';
+import { Button } from '@/ui/components/atoms/Button';
+import { HelperText } from '@/ui/components/atoms/HelperText';
 import { FormValues, schema } from './schema';
 import { addProductAction } from './actions';
-import { SubmitButton } from './SubmitButton';
+
+type FormState = Awaited<ReturnType<typeof addProductAction>>;
 
 export const ProductAddForm = () => {
+	const router = useRouter();
+
 	const formRef = useRef<ElementRef<'form'>>(null);
-	const [formState, formAction] = useFormState(
-		addProductAction,
-		{
-			message: '',
-		},
-		'/admin/products', // redirect
-	);
+	const [formState, formAction] = useFormState<FormState, FormData>(addProductAction, {
+		message: '',
+	});
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(schema),
@@ -48,12 +50,19 @@ export const ProductAddForm = () => {
 	const fileRef = form.register('file');
 	const imageRef = form.register('image');
 
+	useEffect(() => {
+		if (formState.data) {
+			router.push('/admin/products');
+		}
+	}, [formState.data, router]);
+
 	return (
 		<Form {...form}>
 			<form
 				ref={formRef}
 				action={formAction}
 				onSubmit={(evt) => {
+					// TODO Workaround: refactor when found better solution
 					evt.preventDefault();
 					form.handleSubmit(() => {
 						formAction(new FormData(formRef.current!));
@@ -127,13 +136,13 @@ export const ProductAddForm = () => {
 						</FormItem>
 					)}
 				/>
-				<SubmitButton />
+				<Button type="submit">Save</Button>
 
 				{formState.errors && (
-					<p className="my-4 text-center text-destructive">
+					<HelperText className="my-4 text-center" variant="error">
 						<b>Server Error: </b>
 						{formState.message}
-					</p>
+					</HelperText>
 				)}
 			</form>
 		</Form>
