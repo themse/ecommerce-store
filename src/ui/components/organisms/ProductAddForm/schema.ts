@@ -5,6 +5,7 @@ import { fileSchema } from '@/common/form-schemas/file';
 
 export const schema = z.object({
 	name: z.string().min(1, 'Required'),
+	// priceInCents: z.coerce.number().int().min(1, 'Required'),
 	priceInCents: z
 		.string()
 		.regex(/^\d{1,10}$/, 'Invalid price')

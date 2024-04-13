@@ -4,7 +4,7 @@ import { checkFileType } from '@/utils/checkFileType';
 import { MAX_FILE_SIZE } from '@/common/configs/app';
 
 export function getFileValidationSchema(acceptedTypes: string[]) {
-	if (typeof window === 'undefined') return z.any();
+	if (typeof window === 'undefined') return z.custom<File[]>();
 
 	return z
 		.instanceof(FileList)

@@ -17,6 +17,7 @@ import { Input } from '@/ui/components/atoms/Input';
 import { formatCurrency } from '@/utils/formatters';
 import { Textarea } from '@/ui/components/atoms/Textarea';
 import { FormValues, schema } from './schema';
+import { addProductAction } from './actions';
 
 export const ProductAddForm = () => {
 	const form = useForm<FormValues>({
@@ -36,9 +37,15 @@ export const ProductAddForm = () => {
 	const fileRef = form.register('file');
 	const imageRef = form.register('image');
 
-	function onSubmit(values: FormValues) {
-		// TODO implement
-		console.log(values);
+	async function onSubmit({ name, priceInCents, description, file, image }: FormValues) {
+		const formData = new FormData();
+		formData.append('name', name);
+		formData.append('priceInCents', priceInCents);
+		formData.append('description', description);
+		formData.append('file', file![0]);
+		formData.append('image', image![0]);
+
+		return addProductAction(formData);
 	}
 
 	return (
