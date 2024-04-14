@@ -14,6 +14,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
+	DropdownMenuSeparator,
 } from '@/ui/components/molecules/DropdownMenu';
 import { ProductTableItem } from '@/services/api/products/types';
 import {
@@ -74,7 +75,7 @@ export const ProductsTable = ({ products }: Props) => {
 										<span className="sr-only">Actions</span>
 									</Button>
 								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end" className="flex w-40 flex-col gap-y-2">
+								<DropdownMenuContent align="end" className="flex w-40 flex-col gap-y-1">
 									<DropdownMenuItem asChild className="flex cursor-pointer items-center gap-x-2">
 										<a download href={`/admin/products/${product.id}/download`}>
 											<DownloadIcon className="h-5 w-5" /> Download
@@ -93,6 +94,7 @@ export const ProductsTable = ({ products }: Props) => {
 											isAvailableForPurchase={product.isAvailableForPurchase}
 										/>
 									</DropdownMenuItem>
+									<DropdownMenuSeparator />
 									<DropdownMenuItem>
 										<DeleteItem
 											className="flex cursor-pointer items-center justify-start gap-x-2"

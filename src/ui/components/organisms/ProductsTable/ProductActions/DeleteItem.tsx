@@ -1,6 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/ui/components/atoms/Button';
 import { Trash2Icon } from '@/ui/components/atoms/icons';
@@ -15,6 +16,7 @@ type Props = {
 
 export const DeleteItem = ({ productId, isDisabled, className }: Props) => {
 	const [isPending, startTransition] = useTransition();
+	const router = useRouter();
 
 	return (
 		<Button
@@ -25,6 +27,8 @@ export const DeleteItem = ({ productId, isDisabled, className }: Props) => {
 			onClick={() => {
 				startTransition(async () => {
 					await deleteProduct(productId);
+
+					router.refresh();
 				});
 			}}
 		>

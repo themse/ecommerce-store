@@ -1,6 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/ui/components/atoms/Button';
 import { CheckCircle2Icon, XCircleIcon } from '@/ui/components/atoms/icons';
@@ -15,6 +16,7 @@ type Props = {
 
 export const ActiveToggleItem = ({ productId, isAvailableForPurchase, className }: Props) => {
 	const [isPending, startTransition] = useTransition();
+	const router = useRouter();
 
 	return (
 		<Button
@@ -25,6 +27,8 @@ export const ActiveToggleItem = ({ productId, isAvailableForPurchase, className 
 			onClick={() => {
 				startTransition(async () => {
 					await toggleProductAvailability(productId, !isAvailableForPurchase);
+
+					router.refresh();
 				});
 			}}
 		>
