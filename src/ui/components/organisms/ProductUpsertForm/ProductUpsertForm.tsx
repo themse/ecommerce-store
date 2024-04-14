@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useFormState } from 'react-dom';
 import { useRef, ElementRef } from 'react';
 
+import { Product } from '@prisma/client';
 import {
 	Form,
 	FormControl,
@@ -19,10 +20,10 @@ import { formatCurrency } from '@/utils/formatters';
 import { Textarea } from '@/ui/components/atoms/Textarea';
 import { Button } from '@/ui/components/atoms/Button';
 import { HelperText } from '@/ui/components/atoms/HelperText';
+import { FilePreview } from '@/ui/components/molecules/FilePreview';
+import { ImagePreview } from '@/ui/components/molecules/ImagePreview';
 import { FormValues, schema } from './schema';
 import { addProductAction } from './actions';
-import { Product } from '@prisma/client';
-import { FilePreview } from '../../molecules/FilePreview';
 
 type FormState = Awaited<ReturnType<typeof addProductAction>>;
 
@@ -129,15 +130,25 @@ export const ProductUpsertForm = ({ product }: Props) => {
 				<FormField
 					control={form.control}
 					name="image"
-					render={() => (
-						<FormItem>
-							<FormLabel>Image</FormLabel>
-							<FormControl>
-								<Input type="file" {...imageRef} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
+					render={({ field }) => {
+						const file = field?.value?.[0];
+						let source: File | string | undefined = product?.imagePath;
+
+						if (file) {
+							source = file;
+						}
+
+						return (
+							<FormItem>
+								<FormLabel>Image</FormLabel>
+								<FormControl>
+									<Input type="file" {...imageRef} />
+								</FormControl>
+								<FormMessage />
+								{source && <ImagePreview className="max-w-96" file={source} />}
+							</FormItem>
+						);
+					}}
 				/>
 
 				<Button type="submit">Save</Button>
