@@ -23,17 +23,19 @@ import { HelperText } from '@/ui/components/atoms/HelperText';
 import { FilePreview } from '@/ui/components/molecules/FilePreview';
 import { ImagePreview } from '@/ui/components/molecules/ImagePreview';
 import { FormValues, schema } from './schema';
-import { addProductAction } from './actions';
+import { addProductAction, updateProductAction } from './actions';
 
-type FormState = Awaited<ReturnType<typeof addProductAction>>;
+type FormState = Awaited<ReturnType<typeof addProductAction | typeof updateProductAction>>;
 
 type Props = {
 	product?: Product | null;
 };
 
 export const ProductUpsertForm = ({ product }: Props) => {
+	const action = product ? updateProductAction.bind(null, product.id) : addProductAction;
+
 	const formRef = useRef<ElementRef<'form'>>(null);
-	const [formState, formAction] = useFormState<FormState, FormData>(addProductAction, {
+	const [formState, formAction] = useFormState<FormState, FormData>(action, {
 		message: '',
 	});
 
