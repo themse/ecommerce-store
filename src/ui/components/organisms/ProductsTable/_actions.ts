@@ -3,6 +3,7 @@
 import { notFound } from 'next/navigation';
 
 import prisma from '@/services/libs/prisma';
+import { deleteFile } from '@/utils/deleteFile';
 
 export async function toggleProductAvailability(productId: string, isAvailable: boolean) {
 	const updatedProduct = await prisma.product.update({
@@ -27,4 +28,7 @@ export async function deleteProduct(productId: string) {
 	if (!product) {
 		return notFound();
 	}
+	// delete assets
+	await deleteFile(product.filePath);
+	await deleteFile(product.imagePath);
 }
