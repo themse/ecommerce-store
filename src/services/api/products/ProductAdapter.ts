@@ -5,14 +5,14 @@ export class ProductAdapter {
 	constructor(private readonly value: RawProduct) {}
 
 	private get priceInCents() {
-		return formatCurrency(this.value.priceInCents);
+		return formatCurrency(this.value.priceInCents / 100);
 	}
 
 	private get orderCount() {
 		const _value = this.value;
 
 		if (_value?._count?.order != null) {
-			return formatNumber(_value._count.order);
+			return _value._count.order;
 		}
 
 		throw new Error('Please aggregate _count by `order`');

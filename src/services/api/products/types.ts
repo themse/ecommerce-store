@@ -6,7 +6,7 @@ export type ProductTableItem = {
 	name: Product['name'];
 	priceInCents: string;
 	isAvailableForPurchase: Product['isAvailableForPurchase'];
-	orderCount: string;
+	orderCount: number;
 };
 
 // Raw Data use cases
