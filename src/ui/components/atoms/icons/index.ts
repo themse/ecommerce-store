@@ -6,4 +6,5 @@ export {
 	DownloadIcon,
 	PencilIcon,
 	Trash2Icon,
+	FileTextIcon,
 } from 'lucide-react';

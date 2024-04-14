@@ -21,10 +21,16 @@ import { Button } from '@/ui/components/atoms/Button';
 import { HelperText } from '@/ui/components/atoms/HelperText';
 import { FormValues, schema } from './schema';
 import { addProductAction } from './actions';
+import { Product } from '@prisma/client';
+import { FilePreview } from '../../molecules/FilePreview';
 
 type FormState = Awaited<ReturnType<typeof addProductAction>>;
 
-export const ProductAddForm = () => {
+type Props = {
+	product?: Product | null;
+};
+
+export const ProductUpsertForm = ({ product }: Props) => {
 	const formRef = useRef<ElementRef<'form'>>(null);
 	const [formState, formAction] = useFormState<FormState, FormData>(addProductAction, {
 		message: '',
@@ -33,9 +39,9 @@ export const ProductAddForm = () => {
 	const form = useForm<FormValues>({
 		resolver: zodResolver(schema),
 		defaultValues: {
-			name: '',
-			priceInCents: '',
-			description: '',
+			name: product?.name ?? '',
+			priceInCents: product?.priceInCents.toString() ?? '',
+			description: product?.description ?? '',
 		},
 	});
 
@@ -104,16 +110,22 @@ export const ProductAddForm = () => {
 				<FormField
 					control={form.control}
 					name="file"
-					render={() => (
-						<FormItem>
-							<FormLabel>File</FormLabel>
-							<FormControl>
-								<Input type="file" {...fileRef} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
+					render={({ field }) => {
+						const fileName = field?.value?.[0].name ?? product?.filePath.split('/').pop();
+
+						return (
+							<FormItem>
+								<FormLabel>File</FormLabel>
+								<FormControl>
+									<Input type="file" {...fileRef} />
+								</FormControl>
+								<FormMessage />
+								{fileName && <FilePreview fileName={fileName} />}
+							</FormItem>
+						);
+					}}
 				/>
+
 				<FormField
 					control={form.control}
 					name="image"
@@ -127,6 +139,7 @@ export const ProductAddForm = () => {
 						</FormItem>
 					)}
 				/>
+
 				<Button type="submit">Save</Button>
 
 				{formState.errors && (
