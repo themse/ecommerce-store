@@ -4,7 +4,6 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '@/ui/components/molecules/Card';
@@ -23,10 +22,6 @@ export const DashboardCard = ({ title, subtitle, content }: Props) => {
 				<CardDescription>{subtitle}</CardDescription>
 			</CardHeader>
 			<CardContent>{content}</CardContent>
-			<CardFooter>
-				{/* TODO buttons */}
-				<p>Card Footer</p>
-			</CardFooter>
 		</Card>
 	);
 };

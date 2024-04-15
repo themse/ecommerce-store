@@ -7,4 +7,6 @@ export {
 	PencilIcon,
 	Trash2Icon,
 	FileTextIcon,
+	ArrowRightIcon,
+	ShoppingCartIcon,
 } from 'lucide-react';

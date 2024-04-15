@@ -1,9 +1,9 @@
-import 'server-only';
-
 import { Adapter } from '@/services/Adapter';
 import prisma from '@/services/libs/prisma';
 import { ProductAdapter } from './ProductAdapter';
 import { RawProduct } from './types';
+import { Product } from '@prisma/client';
+import { wait } from '@/utils/wait';
 
 export const getProductList = async () => {
 	const rawData = (await prisma.product.findMany({
@@ -29,3 +29,33 @@ export const getProductList = async () => {
 
 	return data;
 };
+
+export async function getNewestProducts(): Promise<Product[]> {
+	await wait(1000); // for demo purpose
+
+	return prisma.product.findMany({
+		where: {
+			isAvailableForPurchase: true,
+		},
+		orderBy: {
+			order: {
+				_count: 'desc',
+			},
+		},
+		take: 6,
+	});
+}
+
+export async function getMostPopularProducts(): Promise<Product[]> {
+	await wait(2000); // for demo purpose
+
+	return prisma.product.findMany({
+		where: {
+			isAvailableForPurchase: true,
+		},
+		orderBy: {
+			createdAt: 'desc',
+		},
+		take: 6,
+	});
+}
