@@ -22,7 +22,7 @@ import { Button } from '@/ui/components/atoms/Button';
 import { HelperText } from '@/ui/components/atoms/HelperText';
 import { FilePreview } from '@/ui/components/molecules/FilePreview';
 import { ImagePreview } from '@/ui/components/molecules/ImagePreview';
-import { FormValues, schema } from './schema';
+import { AddFormValues, UpdateFormValues, addSchema, updateSchema } from './schema';
 import { addProductAction, updateProductAction } from './actions';
 
 type FormState = Awaited<ReturnType<typeof addProductAction | typeof updateProductAction>>;
@@ -32,14 +32,17 @@ type Props = {
 };
 
 export const ProductUpsertForm = ({ product }: Props) => {
+	// Add or Update strategy
+	const schema = product ? updateSchema : addSchema;
 	const action = product ? updateProductAction.bind(null, product.id) : addProductAction;
 
+	// Form
 	const formRef = useRef<ElementRef<'form'>>(null);
 	const [formState, formAction] = useFormState<FormState, FormData>(action, {
 		message: '',
 	});
 
-	const form = useForm<FormValues>({
+	const form = useForm<AddFormValues | UpdateFormValues>({
 		resolver: zodResolver(schema),
 		defaultValues: {
 			name: product?.name ?? '',
@@ -47,14 +50,6 @@ export const ProductUpsertForm = ({ product }: Props) => {
 			description: product?.description ?? '',
 		},
 	});
-
-	/**
-	 * In React, an <input type="file" /> is always an uncontrolled component
-	 * because its value can only be set by a user, and not programmatically.
-	 * read more in docs: https://legacy.reactjs.org/docs/uncontrolled-components.html#the-file-input-tag
-	 */
-	const fileRef = form.register('file');
-	const imageRef = form.register('image');
 
 	return (
 		<Form {...form}>
@@ -114,13 +109,17 @@ export const ProductUpsertForm = ({ product }: Props) => {
 					control={form.control}
 					name="file"
 					render={({ field }) => {
-						const fileName = field?.value?.[0].name ?? product?.filePath.split('/').pop();
+						const fileName = field?.value?.name ?? product?.filePath.split('/').pop();
 
 						return (
 							<FormItem>
 								<FormLabel>File</FormLabel>
 								<FormControl>
-									<Input type="file" {...fileRef} />
+									<Input
+										ref={field.ref}
+										type="file"
+										onChange={(event) => field.onChange(event.target.files?.[0])}
+									/>
 								</FormControl>
 								<FormMessage />
 								{fileName && <FilePreview fileName={fileName} />}
@@ -133,7 +132,7 @@ export const ProductUpsertForm = ({ product }: Props) => {
 					control={form.control}
 					name="image"
 					render={({ field }) => {
-						const file = field?.value?.[0];
+						const file = field.value;
 						let source: File | string | undefined = product?.imagePath;
 
 						if (file) {
@@ -144,7 +143,11 @@ export const ProductUpsertForm = ({ product }: Props) => {
 							<FormItem>
 								<FormLabel>Image</FormLabel>
 								<FormControl>
-									<Input type="file" {...imageRef} />
+									<Input
+										ref={field.ref}
+										type="file"
+										onChange={(event) => field.onChange(event.target.files?.[0])}
+									/>
 								</FormControl>
 								<FormMessage />
 								{source && <ImagePreview className="max-w-96" file={source} />}
