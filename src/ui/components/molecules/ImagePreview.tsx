@@ -10,6 +10,8 @@ type Props = {
 export const ImagePreview = ({ file, className }: Props) => {
 	const imgSource = file instanceof File ? URL.createObjectURL(file) : file;
 
+	// ? Do we need it -> URL.revokeObjectURL(imgSource)
+
 	return (
 		<div className={cn('w-full rounded-sm border border-gray-100 p-2', className)}>
 			<Image
