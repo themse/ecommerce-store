@@ -3,11 +3,11 @@ import Link from 'next/link';
 
 import { Button } from '@/ui/components/atoms/Button';
 import { ProductsTable } from '@/ui/components/organisms/ProductsTable';
-import { getProductList } from '@/services/api/products/products';
+import { getProductTableData } from '@/services/api/products/products';
 import { Header } from '../_components/Header';
 
 export default async function Products() {
-	const products = await getProductList();
+	const products = await getProductTableData();
 
 	return (
 		<section className="flex flex-col gap-y-2">

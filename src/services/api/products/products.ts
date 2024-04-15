@@ -5,7 +5,7 @@ import { RawProduct } from './types';
 import { Product } from '@prisma/client';
 import { wait } from '@/utils/wait';
 
-export const getProductList = async () => {
+export const getProductTableData = async () => {
 	const rawData = (await prisma.product.findMany({
 		select: {
 			id: true,
@@ -57,5 +57,16 @@ export async function getMostPopularProducts(): Promise<Product[]> {
 			createdAt: 'desc',
 		},
 		take: 6,
+	});
+}
+
+export async function getAllProducts(): Promise<Product[]> {
+	return prisma.product.findMany({
+		where: {
+			isAvailableForPurchase: true,
+		},
+		orderBy: {
+			name: 'asc',
+		},
 	});
 }

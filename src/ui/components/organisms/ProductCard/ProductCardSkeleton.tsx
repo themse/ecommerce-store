@@ -14,10 +14,10 @@ export const ProductCardSkeleton = () => {
 			<div className="aspect-video h-auto w-full bg-gray-300" />
 			<CardHeader>
 				<CardTitle>
-					<div className="h-6 w-3/4 rounded-full bg-gray-300" />
+					<p className="h-6 w-3/4 rounded-full bg-gray-300" />
 				</CardTitle>
 				<CardDescription>
-					<div className="h-4 w-1/2 rounded-full bg-gray-300" />
+					<span className="block h-4 w-1/2 rounded-full bg-gray-300" />
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-grow flex-col gap-y-1">
