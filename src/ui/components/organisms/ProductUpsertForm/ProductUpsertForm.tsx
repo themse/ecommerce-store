@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useFormState } from 'react-dom';
-import { useRef, ElementRef } from 'react';
 
 import { Product } from '@prisma/client';
 import {
@@ -22,7 +21,7 @@ import { Button } from '@/ui/components/atoms/Button';
 import { HelperText } from '@/ui/components/atoms/HelperText';
 import { FilePreview } from '@/ui/components/molecules/FilePreview';
 import { ImagePreview } from '@/ui/components/molecules/ImagePreview';
-import { FormValues, schema } from './schema';
+import { AddFormValues, UpdateFormValues, addSchema, updateSchema } from './schema';
 import { addProductAction, updateProductAction } from './actions';
 
 type FormState = Awaited<ReturnType<typeof addProductAction | typeof updateProductAction>>;
@@ -32,14 +31,17 @@ type Props = {
 };
 
 export const ProductUpsertForm = ({ product }: Props) => {
+	// Add or Update strategy
+	const schema = product ? updateSchema : addSchema;
 	const action = product ? updateProductAction.bind(null, product.id) : addProductAction;
 
-	const formRef = useRef<ElementRef<'form'>>(null);
+	// Form
 	const [formState, formAction] = useFormState<FormState, FormData>(action, {
 		message: '',
 	});
 
-	const form = useForm<FormValues>({
+	const form = useForm<AddFormValues | UpdateFormValues>({
+		mode: 'onChange',
 		resolver: zodResolver(schema),
 		defaultValues: {
 			name: product?.name ?? '',
@@ -48,25 +50,28 @@ export const ProductUpsertForm = ({ product }: Props) => {
 		},
 	});
 
-	/**
-	 * In React, an <input type="file" /> is always an uncontrolled component
-	 * because its value can only be set by a user, and not programmatically.
-	 * read more in docs: https://legacy.reactjs.org/docs/uncontrolled-components.html#the-file-input-tag
-	 */
-	const fileRef = form.register('file');
-	const imageRef = form.register('image');
+	function onSubmit() {
+		const { name, priceInCents, description, file, image } = form.getValues();
+
+		const formData = new FormData();
+		formData.append('name', name);
+		formData.append('priceInCents', priceInCents);
+		formData.append('description', description);
+
+		file && formData.append('file', file);
+		image && formData.append('image', image);
+
+		formAction(formData);
+	}
 
 	return (
 		<Form {...form}>
 			<form
-				ref={formRef}
 				action={formAction}
 				onSubmit={(evt) => {
 					evt.preventDefault();
 
-					form.handleSubmit(() => {
-						formAction(new FormData(formRef.current!));
-					})(evt);
+					form.handleSubmit(onSubmit)(evt);
 				}}
 				className="space-y-8"
 			>
@@ -111,19 +116,22 @@ export const ProductUpsertForm = ({ product }: Props) => {
 					)}
 				/>
 				<FormField
-					control={form.control}
 					name="file"
-					render={({ field }) => {
-						const fileName = field?.value?.[0].name ?? product?.filePath.split('/').pop();
+					render={({ field, fieldState }) => {
+						const fileName = field?.value?.name ?? product?.filePath.split('/').pop();
 
 						return (
 							<FormItem>
 								<FormLabel>File</FormLabel>
 								<FormControl>
-									<Input type="file" {...fileRef} />
+									<Input
+										ref={field.ref}
+										type="file"
+										onChange={(event) => field.onChange(event.target.files?.[0])}
+									/>
 								</FormControl>
 								<FormMessage />
-								{fileName && <FilePreview fileName={fileName} />}
+								{!fieldState.error && fileName && <FilePreview fileName={fileName} />}
 							</FormItem>
 						);
 					}}
@@ -132,8 +140,8 @@ export const ProductUpsertForm = ({ product }: Props) => {
 				<FormField
 					control={form.control}
 					name="image"
-					render={({ field }) => {
-						const file = field?.value?.[0];
+					render={({ field, fieldState }) => {
+						const file = field.value;
 						let source: File | string | undefined = product?.imagePath;
 
 						if (file) {
@@ -144,10 +152,14 @@ export const ProductUpsertForm = ({ product }: Props) => {
 							<FormItem>
 								<FormLabel>Image</FormLabel>
 								<FormControl>
-									<Input type="file" {...imageRef} />
+									<Input
+										ref={field.ref}
+										type="file"
+										onChange={(event) => field.onChange(event.target.files?.[0])}
+									/>
 								</FormControl>
 								<FormMessage />
-								{source && <ImagePreview className="max-w-96" file={source} />}
+								{!fieldState.error && source && <ImagePreview className="max-w-96" file={source} />}
 							</FormItem>
 						);
 					}}

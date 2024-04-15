@@ -5,27 +5,23 @@ import { notFound, redirect } from 'next/navigation';
 
 import prisma from '@/services/libs/prisma';
 import { uploadFile } from '@/utils/uploadFile';
-import { FormValues } from './schema';
 import { ActionResponse } from '@/types/ActionResponse';
-import { schema } from './schema';
 import { deleteFile } from '@/utils/deleteFile';
+import { AddFormValues, UpdateFormValues, addSchema, updateSchema } from './schema';
 
 export async function addProductAction(
-	_prevState: ActionResponse<Product, FormValues>,
+	_prevState: ActionResponse<Product, AddFormValues>,
 	formData: FormData,
-): Promise<ActionResponse<Product, FormValues>> {
+): Promise<ActionResponse<Product, AddFormValues>> {
 	const data = Object.fromEntries(formData);
-	const parsed = schema.safeParse(data);
+	const parsed = addSchema.safeParse(data);
 
 	if (parsed.success) {
-		const { name, priceInCents, description } = parsed.data;
-
-		// TODO Issue send FileList/File[] but receive File
-		const { file, image } = data;
+		const { name, priceInCents, description, file, image } = parsed.data;
 
 		// Upload files
-		const { filePath } = await uploadFile(file as File, 'products');
-		const { filePath: imagePath } = await uploadFile(image as File, 'products');
+		const { filePath } = await uploadFile(file, 'products');
+		const { filePath: imagePath } = await uploadFile(image, 'products');
 
 		await prisma.product.create({
 			data: {
@@ -50,14 +46,14 @@ export async function addProductAction(
 
 export async function updateProductAction(
 	productId: string,
-	_prevState: ActionResponse<Product, FormValues>,
+	_prevState: ActionResponse<Product, UpdateFormValues>,
 	formData: FormData,
-): Promise<ActionResponse<Product, FormValues>> {
+): Promise<ActionResponse<Product, UpdateFormValues>> {
 	const data = Object.fromEntries(formData);
-	const parsed = schema.safeParse(data);
+	const parsed = updateSchema.safeParse(data);
 
 	if (parsed.success) {
-		const { name, priceInCents, description } = parsed.data;
+		const { name, priceInCents, description, file, image } = parsed.data;
 
 		const product = await prisma.product.findUnique({
 			where: {
@@ -67,20 +63,16 @@ export async function updateProductAction(
 
 		if (!product) notFound();
 
-		// TODO Issue send FileList/File[] but receive File
-		const file = data.file as File | null;
-		const image = data.image as File | null;
-
 		// Upload files
 		let filePath = product.filePath;
-		if (file !== null && file.size > 0) {
+		if (file != null && file.size > 0) {
 			await deleteFile(product.filePath);
 			const response = await uploadFile(file, 'products');
 			filePath = response.filePath;
 		}
 
 		let imagePath = product.imagePath;
-		if (image !== null && image.size > 0) {
+		if (image != null && image.size > 0) {
 			await deleteFile(product.imagePath);
 			const response = await uploadFile(image, 'products');
 			imagePath = response.filePath;
