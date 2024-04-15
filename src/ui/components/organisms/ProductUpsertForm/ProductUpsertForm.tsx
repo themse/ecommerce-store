@@ -51,6 +51,20 @@ export const ProductUpsertForm = ({ product }: Props) => {
 		},
 	});
 
+	function onSubmit() {
+		const { name, priceInCents, description, file, image } = form.getValues();
+
+		const formData = new FormData();
+		formData.append('name', name);
+		formData.append('priceInCents', priceInCents);
+		formData.append('description', description);
+
+		file && formData.append('file', file);
+		image && formData.append('image', image);
+
+		formAction(formData);
+	}
+
 	return (
 		<Form {...form}>
 			<form
@@ -59,9 +73,7 @@ export const ProductUpsertForm = ({ product }: Props) => {
 				onSubmit={(evt) => {
 					evt.preventDefault();
 
-					form.handleSubmit(() => {
-						formAction(new FormData(formRef.current!));
-					})(evt);
+					form.handleSubmit(onSubmit)(evt);
 				}}
 				className="space-y-8"
 			>
@@ -106,7 +118,6 @@ export const ProductUpsertForm = ({ product }: Props) => {
 					)}
 				/>
 				<FormField
-					control={form.control}
 					name="file"
 					render={({ field }) => {
 						const fileName = field?.value?.name ?? product?.filePath.split('/').pop();

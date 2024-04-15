@@ -17,7 +17,7 @@ export const addSchema = z.object({
 
 export const updateSchema = addSchema.extend({
 	file: addSchema.shape.file.optional(),
-	image: addSchema.shape.file.optional(),
+	image: addSchema.shape.image.optional(),
 });
 
 export type AddFormValues = z.infer<typeof addSchema>;
