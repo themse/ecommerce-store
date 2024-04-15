@@ -4,6 +4,7 @@ import { ProductAdapter } from './ProductAdapter';
 import { RawProduct } from './types';
 import { Product } from '@prisma/client';
 import { wait } from '@/utils/wait';
+import { cache } from '@/utils/cache';
 
 export const getProductTableData = async () => {
 	const rawData = (await prisma.product.findMany({
@@ -30,37 +31,47 @@ export const getProductTableData = async () => {
 	return data;
 };
 
-export async function getNewestProducts(): Promise<Product[]> {
-	await wait(1000); // for demo purpose
+export const getNewestProducts = cache(
+	async (): Promise<Product[]> => {
+		await wait(1000); // for demo purpose
 
-	return prisma.product.findMany({
-		where: {
-			isAvailableForPurchase: true,
-		},
-		orderBy: {
-			order: {
-				_count: 'desc',
+		return prisma.product.findMany({
+			where: {
+				isAvailableForPurchase: true,
 			},
-		},
-		take: 6,
-	});
-}
+			orderBy: {
+				order: {
+					_count: 'desc',
+				},
+			},
+			take: 6,
+		});
+	},
+	['/', 'newest-products'],
+	{},
+);
 
-export async function getMostPopularProducts(): Promise<Product[]> {
-	await wait(2000); // for demo purpose
+export const getMostPopularProducts = cache(
+	async (): Promise<Product[]> => {
+		await wait(2000); // for demo purpose
 
-	return prisma.product.findMany({
-		where: {
-			isAvailableForPurchase: true,
-		},
-		orderBy: {
-			createdAt: 'desc',
-		},
-		take: 6,
-	});
-}
+		return prisma.product.findMany({
+			where: {
+				isAvailableForPurchase: true,
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+			take: 6,
+		});
+	},
+	['/', 'most-popular-products'],
+	{
+		revalidate: 60 * 60 * 24, // 1 day
+	},
+);
 
-export async function getAllProducts(): Promise<Product[]> {
+export const getAllProducts = cache(async (): Promise<Product[]> => {
 	return prisma.product.findMany({
 		where: {
 			isAvailableForPurchase: true,
@@ -69,4 +80,4 @@ export async function getAllProducts(): Promise<Product[]> {
 			name: 'asc',
 		},
 	});
-}
+}, ['/products', 'all-products']);

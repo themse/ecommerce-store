@@ -1,5 +1,3 @@
-'use server';
-
 import prisma from '@/services/libs/prisma';
 import { formatCurrency, formatNumber } from '@/utils/formatters';
 

@@ -1,6 +1,7 @@
 'use server';
 
 import { Product } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 import { notFound, redirect } from 'next/navigation';
 
 import prisma from '@/services/libs/prisma';
@@ -33,6 +34,9 @@ export async function addProductAction(
 				isAvailableForPurchase: false,
 			},
 		});
+
+		revalidatePath('/');
+		revalidatePath('/products');
 
 		redirect('/admin/products');
 	}
@@ -91,6 +95,9 @@ export async function updateProductAction(
 				isAvailableForPurchase: false,
 			},
 		});
+
+		revalidatePath('/');
+		revalidatePath('/products');
 
 		redirect('/admin/products');
 	}

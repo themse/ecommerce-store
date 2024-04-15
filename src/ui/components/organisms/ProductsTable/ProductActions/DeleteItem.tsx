@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/ui/components/atoms/Button';
 import { Trash2Icon } from '@/ui/components/atoms/icons';
 import { cn } from '@/utils/cn';
-import { deleteProduct } from '../_actions';
+import { deleteProduct } from '../actions';
 
 type Props = {
 	productId: string;

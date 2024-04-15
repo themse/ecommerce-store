@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/ui/components/atoms/Button';
 import { CheckCircle2Icon, XCircleIcon } from '@/ui/components/atoms/icons';
 import { cn } from '@/utils/cn';
-import { toggleProductAvailability } from '../_actions';
+import { toggleProductAvailability } from '../actions';
 
 type Props = {
 	productId: string;

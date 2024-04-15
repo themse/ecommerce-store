@@ -1,7 +1,5 @@
-import React from 'react';
-
 import { DashboardCard } from '@/ui/components/organisms/DashboardCard';
-import { getSalesData, getUserData, getProductData } from './actions';
+import { getSalesData, getUserData, getProductData } from '@/services/api/analytics';
 
 export const Analytics = async () => {
 	const [salesData, userData, productData] = await Promise.all([
