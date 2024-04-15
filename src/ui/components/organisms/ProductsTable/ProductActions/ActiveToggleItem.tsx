@@ -1,6 +1,5 @@
 'use client';
 
-import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/ui/components/atoms/Button';
@@ -15,21 +14,16 @@ type Props = {
 };
 
 export const ActiveToggleItem = ({ productId, isAvailableForPurchase, className }: Props) => {
-	const [isPending, startTransition] = useTransition();
 	const router = useRouter();
 
 	return (
 		<Button
 			className={cn('h-auto w-full p-0 hover:no-underline', className)}
-			disabled={isPending}
 			variant="link"
 			type="button"
-			onClick={() => {
-				startTransition(async () => {
-					await toggleProductAvailability(productId, !isAvailableForPurchase);
-
-					router.refresh();
-				});
+			onClick={async () => {
+				await toggleProductAvailability(productId, !isAvailableForPurchase);
+				router.refresh();
 			}}
 		>
 			{isAvailableForPurchase ? (
