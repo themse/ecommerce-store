@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useFormState } from 'react-dom';
-import { useRef, ElementRef } from 'react';
 
 import { Product } from '@prisma/client';
 import {
@@ -37,12 +36,12 @@ export const ProductUpsertForm = ({ product }: Props) => {
 	const action = product ? updateProductAction.bind(null, product.id) : addProductAction;
 
 	// Form
-	const formRef = useRef<ElementRef<'form'>>(null);
 	const [formState, formAction] = useFormState<FormState, FormData>(action, {
 		message: '',
 	});
 
 	const form = useForm<AddFormValues | UpdateFormValues>({
+		mode: 'onChange',
 		resolver: zodResolver(schema),
 		defaultValues: {
 			name: product?.name ?? '',
@@ -68,7 +67,6 @@ export const ProductUpsertForm = ({ product }: Props) => {
 	return (
 		<Form {...form}>
 			<form
-				ref={formRef}
 				action={formAction}
 				onSubmit={(evt) => {
 					evt.preventDefault();
@@ -119,7 +117,7 @@ export const ProductUpsertForm = ({ product }: Props) => {
 				/>
 				<FormField
 					name="file"
-					render={({ field }) => {
+					render={({ field, fieldState }) => {
 						const fileName = field?.value?.name ?? product?.filePath.split('/').pop();
 
 						return (
@@ -133,7 +131,7 @@ export const ProductUpsertForm = ({ product }: Props) => {
 									/>
 								</FormControl>
 								<FormMessage />
-								{fileName && <FilePreview fileName={fileName} />}
+								{!fieldState.error && fileName && <FilePreview fileName={fileName} />}
 							</FormItem>
 						);
 					}}
@@ -142,7 +140,7 @@ export const ProductUpsertForm = ({ product }: Props) => {
 				<FormField
 					control={form.control}
 					name="image"
-					render={({ field }) => {
+					render={({ field, fieldState }) => {
 						const file = field.value;
 						let source: File | string | undefined = product?.imagePath;
 
@@ -161,7 +159,7 @@ export const ProductUpsertForm = ({ product }: Props) => {
 									/>
 								</FormControl>
 								<FormMessage />
-								{source && <ImagePreview className="max-w-96" file={source} />}
+								{!fieldState.error && source && <ImagePreview className="max-w-96" file={source} />}
 							</FormItem>
 						);
 					}}
