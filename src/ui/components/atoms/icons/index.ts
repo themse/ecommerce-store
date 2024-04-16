@@ -12,4 +12,5 @@ export {
 	AlertCircleIcon,
 	CircleCheckBigIcon,
 	Undo2Icon,
+	LinkIcon,
 } from 'lucide-react';

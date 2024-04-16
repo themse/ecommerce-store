@@ -67,7 +67,7 @@ export default async function PurchaseSuccess({ searchParams }: PageProps) {
 			</div>
 			<Button asChild type="button" className="flex gap-x-2">
 				{isSuccess ? (
-					<a download href={`/products/download/${downloadVerificationId}`}>
+					<a href={`/products/download/${downloadVerificationId}`}>
 						<DownloadIcon className="h-4 w-4" /> Download
 					</a>
 				) : (
