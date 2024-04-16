@@ -9,4 +9,7 @@ export {
 	FileTextIcon,
 	ArrowRightIcon,
 	ShoppingCartIcon,
+	AlertCircleIcon,
+	CircleCheckBigIcon,
+	Undo2Icon,
 } from 'lucide-react';
