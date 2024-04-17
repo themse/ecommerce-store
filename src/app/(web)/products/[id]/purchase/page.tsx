@@ -6,7 +6,11 @@ import prisma from '@/services/libs/prisma';
 import { stripe } from '@/services/libs/stripe';
 import { CheckoutForm } from './_components/CheckoutForm';
 
-export default async function ProductPurchase({ params }: PageProps<{ id: string }>) {
+type Params = {
+	id: string;
+};
+
+export default async function ProductPurchase({ params }: PageProps<Params>) {
 	const { id: productId } = params;
 
 	const product = await prisma.product.findUnique({

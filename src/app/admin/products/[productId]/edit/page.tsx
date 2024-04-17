@@ -5,7 +5,11 @@ import { PageProps } from '@/types/app';
 import prisma from '@/services/libs/prisma';
 import { Header } from '../../../_components/Header';
 
-export default async function ProductEdit({ params }: PageProps<{ productId: string }>) {
+type Params = {
+	productId: string;
+};
+
+export default async function ProductEdit({ params }: PageProps<Params>) {
 	const { productId } = params;
 
 	const product = await prisma.product.findUnique({

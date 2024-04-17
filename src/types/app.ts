@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react';
 
-export type PageProps<TParams = void> = Readonly<{
+export type PageProps<TParams = void, TSearchParams = void> = Readonly<{
 	params: TParams;
-	searchParams: Record<string, string | string[] | undefined>;
+	searchParams: TSearchParams;
 }>;
 
 export type LayoutProps<TParams = void, TParallelRoutes = void> = Readonly<

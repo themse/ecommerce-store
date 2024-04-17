@@ -17,8 +17,13 @@ import {
 import { Button } from '@/ui/components/atoms/Button';
 import { createDownloadVerification } from './_actions';
 
-export default async function PurchaseSuccess({ searchParams }: PageProps) {
-	const paymentIntentId = searchParams?.payment_intent as string | undefined;
+type Params = {};
+type SearchParams = {
+	payment_intent?: string;
+};
+
+export default async function PurchaseSuccess({ searchParams }: PageProps<Params, SearchParams>) {
+	const paymentIntentId = searchParams?.payment_intent;
 
 	if (!paymentIntentId) return notFound();
 
