@@ -14,6 +14,7 @@
 		"db:update": "dotenv -e .env.local -- npx prisma db push",
 		"db:migrate": "dotenv -e .env.local -- npx prisma migrate dev",
 		"db:generate": "dotenv -e .env.local -- npx prisma generate",
+		"webhook:dev": "stripe listen --forward-to localhost:3000/webhooks/stripe",
 		"prepare": "husky install"
 	},
 	"dependencies": {
@@ -31,7 +32,9 @@
 		"next": "14.2.0",
 		"react": "^18",
 		"react-dom": "^18",
+		"react-email": "^2.1.1",
 		"react-hook-form": "^7.51.3",
+		"resend": "^3.2.0",
 		"stripe": "^15.2.0",
 		"tailwind-merge": "^2.2.2",
 		"tailwindcss-animate": "^1.0.7",
