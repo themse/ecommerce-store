@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
+# Ecommerce Store
+  
 ## Getting Started
 
-First, run the development server:
+Run the project using the following steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Copy file with environment variables and fill necessary one
+
+```sh
+cp .env.sample .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Visit [Stripe Website](https://dashboard.stripe.com/webhooks/create?endpoint_location=local) and generate `STRIPE_WEBHOOK_SECRET`:
+  
+```sh
+stripe listen --forward-to localhost:3000/webhooks/stripe
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Install all dependencies
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```sh
+pnpm i
+```
 
-## Learn More
+- Start the server
 
-To learn more about Next.js, take a look at the following resources:
+```sh
+pnpm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Technologies Used
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **React.js:** A popular JavaScript library for building user interfaces.
+- **TypeScript:** A typed superset of JavaScript that enhances code maintainability and scalability.
+- **Next.js:** A React framework that enables server-side rendering, static site generation, and other optimizations for efficient web development.
+- **TailwindCSS:** A utility-first CSS framework that simplifies styling by offering a wide range of pre-defined utility classes.
+- **Stripe:** A payment processing platform that enables businesses to accept payments online securely and easily manage transactions and subscriptions.
