@@ -1,4 +1,4 @@
-import { formatCurrency, formatNumber } from '@/utils/formatters';
+import { formatCurrency } from '@/utils/formatters';
 import { ProductTableItem, RawProduct } from './types';
 
 export class ProductAdapter {
