@@ -30,6 +30,20 @@ pnpm run dev
 
 - Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+- Start the server for Email development
+
+```sh
+pnpm run email:dev
+```
+
+- Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
+  
+- Start stripe webhook listener
+
+```sh
+pnpm run webhook:dev
+```
+
 ## Technologies Used
 
 - **React.js:** A popular JavaScript library for building user interfaces.
