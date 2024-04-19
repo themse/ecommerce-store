@@ -3,7 +3,6 @@ import prisma from '@/services/libs/prisma';
 import { ProductAdapter } from './ProductAdapter';
 import { RawProduct } from './types';
 import { Product } from '@prisma/client';
-import { wait } from '@/utils/wait';
 import { cache } from '@/utils/cache';
 
 export const getProductTableData = async () => {
@@ -33,8 +32,6 @@ export const getProductTableData = async () => {
 
 export const getNewestProducts = cache(
 	async (): Promise<Product[]> => {
-		await wait(1000); // for demo purpose
-
 		return prisma.product.findMany({
 			where: {
 				isAvailableForPurchase: true,
@@ -53,8 +50,6 @@ export const getNewestProducts = cache(
 
 export const getMostPopularProducts = cache(
 	async (): Promise<Product[]> => {
-		await wait(2000); // for demo purpose
-
 		return prisma.product.findMany({
 			where: {
 				isAvailableForPurchase: true,

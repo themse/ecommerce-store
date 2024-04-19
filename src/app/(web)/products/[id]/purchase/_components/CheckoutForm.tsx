@@ -38,7 +38,7 @@ export const CheckoutForm = ({ product, clientSecret }: Props) => {
 		<div className="mx-auto flex w-full max-w-5xl flex-col gap-y-8">
 			<div className="flex items-center gap-x-4">
 				<div className="relative aspect-video w-1/3 flex-shrink-0">
-					<Image src={product.imagePath} alt={product.name} fill className="object-cover" />
+					<Image src={product.imagePath} alt={product.name} fill className="object-contain" />
 				</div>
 				<div>
 					<p className="text-lg">{formatCurrency(product.priceInCents / 100)}</p>

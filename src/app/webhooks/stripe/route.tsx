@@ -4,6 +4,7 @@ import { stripe } from '@/services/libs/stripe';
 import { env } from '@/utils/env';
 import prisma from '@/services/libs/prisma';
 import { resend } from '@/services/libs/resend';
+import PurchaseReceipt from '@/email/PurchaseReceipt';
 
 export async function POST(request: NextRequest) {
 	const data = await request.text();
@@ -72,7 +73,13 @@ export async function POST(request: NextRequest) {
 			from: `Support <${env.SENDER_EMAIL}>`,
 			to: email,
 			subject: 'Order Confirmation',
-			react: <p>Hi</p>,
+			react: (
+				<PurchaseReceipt
+					order={orderItem}
+					product={product}
+					downloadVerificationId={downloadVerification.id}
+				/>
+			),
 		});
 
 		return new NextResponse();

@@ -15,6 +15,7 @@
 		"db:migrate": "dotenv -e .env.local -- npx prisma migrate dev",
 		"db:generate": "dotenv -e .env.local -- npx prisma generate",
 		"webhook:dev": "stripe listen --forward-to localhost:3000/webhooks/stripe",
+		"email:dev": "dotenv -e .env.local -- email dev --dir src/email --port 3001",
 		"prepare": "husky install"
 	},
 	"dependencies": {
@@ -23,6 +24,7 @@
 		"@radix-ui/react-dropdown-menu": "^2.0.6",
 		"@radix-ui/react-label": "^2.0.2",
 		"@radix-ui/react-slot": "^1.0.2",
+		"@react-email/components": "^0.0.16",
 		"@stripe/react-stripe-js": "^2.7.0",
 		"@stripe/stripe-js": "^3.3.0",
 		"@t3-oss/env-nextjs": "^0.9.2",

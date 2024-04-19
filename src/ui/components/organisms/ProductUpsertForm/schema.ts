@@ -10,7 +10,7 @@ export const addSchema = z.object({
 		.string()
 		.regex(/^\d{1,10}$/, 'Invalid price')
 		.min(1, 'Required'),
-	description: z.string().min(1, 'Required').max(200),
+	description: z.string().min(1, 'Required').max(2000),
 	file: fileSchema,
 	image: imageSchema,
 });

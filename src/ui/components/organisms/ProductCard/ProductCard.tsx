@@ -25,7 +25,7 @@ export const ProductCard = ({ productId, name, priceInCents, description, imageP
 	return (
 		<Card className="flex flex-col overflow-hidden">
 			<div className="relative aspect-video h-auto w-full">
-				<Image src={imagePath} alt={name} fill />
+				<Image src={imagePath} alt={name} fill className="object-contain" />
 			</div>
 			<CardHeader>
 				<CardTitle>{name}</CardTitle>
