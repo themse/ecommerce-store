@@ -13,4 +13,5 @@ export {
 	CircleCheckBigIcon,
 	Undo2Icon,
 	LinkIcon,
+	SendIcon,
 } from 'lucide-react';
