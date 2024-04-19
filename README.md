@@ -44,6 +44,12 @@ pnpm run email:dev
 pnpm run webhook:dev
 ```
 
+## Preview
+
+<div style="display:flex; justify-content: center;">
+    <img src="./preview.png" style="max-width: 700px;" />
+</div>
+
 ## Technologies Used
 
 - **React.js:** A popular JavaScript library for building user interfaces.
